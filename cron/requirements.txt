@@ -1,0 +1,16 @@
+# GAC - Dependencias Python para Cron Jobs
+# Instalar con: pip install -r requirements.txt
+
+# Google API Client
+google-api-python-client==2.70.0
+google-auth-httplib2==0.1.0
+google-auth-oauthlib==0.8.0
+
+# MySQL Connector
+mysql-connector-python==8.0.33
+
+# Variables de entorno
+python-dotenv==1.0.0
+
+# Utilidades
+requests==2.31.0
