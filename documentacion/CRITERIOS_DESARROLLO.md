@@ -2,6 +2,50 @@
 
 ## 📋 Principios Fundamentales
 
+### 0. Organización de Documentación
+
+**CRITERIO ESTRICTO:** Toda la documentación, archivos de lectura, instrucciones y guías deben crearse en la carpeta `documentacion/`.
+
+#### Reglas:
+- ✅ **PERMITIDO:**
+  - Archivos `.md` (Markdown) en `documentacion/`
+  - Archivos `.txt` de instrucciones en `documentacion/`
+  - Cualquier archivo de lectura/documentación en `documentacion/`
+  - `README.md` en la raíz (solo el principal del proyecto)
+
+- ❌ **PROHIBIDO:**
+  - Crear archivos de documentación fuera de `documentacion/`
+  - Archivos `.md` en la raíz del proyecto (excepto `README.md`)
+  - Instrucciones o guías en otras carpetas
+
+#### Estructura:
+```
+SISTEMA_GAC/
+├── README.md                    # ✅ Solo el README principal
+├── documentacion/               # ✅ TODA la documentación aquí
+│   ├── README.md               # Índice de documentación
+│   ├── ARCHITECTURE.md
+│   ├── INSTALLATION.md
+│   ├── DEPLOYMENT.md
+│   ├── COMANDOS_EJECUTAR.txt
+│   └── ... (todos los .md y archivos de instrucciones)
+└── ...
+```
+
+#### Ejemplo Correcto:
+```
+documentacion/
+  └── NUEVA_GUIA.md              # ✅ Nueva documentación aquí
+```
+
+#### Ejemplo Incorrecto:
+```
+SISTEMA_GAC/
+  └── NUEVA_GUIA.md              # ❌ NO crear aquí
+```
+
+---
+
 ### 1. Separación de Código y Estilo
 
 **CRITERIO ESTRICTO:** El código HTML/PHP y los estilos CSS deben estar completamente separados.
@@ -185,6 +229,7 @@ if (confirm('¿Estás seguro?')) {
 - [ ] Responsive design verificado
 - [ ] Sin errores de consola
 - [ ] Funcionalidad probada
+- [ ] **Toda la documentación está en `documentacion/`**
 
 ---
 
@@ -195,6 +240,7 @@ if (confirm('¿Estás seguro?')) {
 3. **Siempre** usar el sistema de modales para notificaciones
 4. **Mantener** consistencia en la estructura de carpetas
 5. **Documentar** componentes complejos
+6. **TODA la documentación** debe ir en `documentacion/`
 
 ---
 

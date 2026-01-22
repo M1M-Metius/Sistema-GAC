@@ -1,7 +1,7 @@
 # GAC - Dependencias Python para Cron Jobs
 # Instalar con: pip install -r requirements.txt
 
-# Google API Client
+# Google API Client (para futura integración Gmail)
 google-api-python-client==2.70.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.8.0
@@ -14,3 +14,5 @@ python-dotenv==1.0.0
 
 # Utilidades
 requests==2.31.0
+
+# Nota: imaplib viene incluido con Python estándar, no requiere instalación

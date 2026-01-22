@@ -8,25 +8,30 @@
 namespace Gac\Controllers;
 
 use Gac\Core\Request;
+use Gac\Services\Code\CodeService;
 
 class CodeController
 {
+    /**
+     * Servicio de códigos
+     */
+    private CodeService $codeService;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->codeService = new CodeService();
+    }
+
     /**
      * Mostrar página de consulta de códigos
      */
     public function consult(Request $request): void
     {
-        // Obtener plataformas disponibles (por ahora hardcodeadas, luego desde BD)
-        $platforms = [
-            'netflix' => 'Netflix',
-            'disney' => 'Disney+',
-            'prime' => 'Amazon Prime Video',
-            'spotify' => 'Spotify',
-            'crunchyroll' => 'Crunchyroll',
-            'paramount' => 'Paramount+',
-            'chatgpt' => 'ChatGPT',
-            'canva' => 'Canva'
-        ];
+        // Obtener plataformas disponibles desde BD
+        $platforms = $this->codeService->getEnabledPlatforms();
 
         // Si es POST, procesar consulta
         if ($request->method() === 'POST') {
@@ -59,30 +64,13 @@ class CodeController
             return;
         }
 
-        // Validar email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            json_response([
-                'success' => false,
-                'message' => 'El email ingresado no es válido'
-            ], 400);
-            return;
-        }
+        // Consultar código usando el servicio
+        $result = $this->codeService->consultCode($platform, $email, $username);
 
-        // Validar usuario (mínimo 3 caracteres)
-        if (strlen(trim($username)) < 3) {
-            json_response([
-                'success' => false,
-                'message' => 'El usuario debe tener al menos 3 caracteres'
-            ], 400);
-            return;
-        }
-
-        // TODO: Implementar lógica de consulta real cuando esté lista la BD
-        // Por ahora, respuesta mock
-        json_response([
-            'success' => false,
-            'message' => 'Sistema en desarrollo. La funcionalidad estará disponible pronto.'
-        ], 503);
+        // Determinar código HTTP
+        $httpCode = $result['success'] ? 200 : 404;
+        
+        json_response($result, $httpCode);
     }
 
     /**
@@ -113,31 +101,13 @@ class CodeController
             return;
         }
 
-        // Validar email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            json_response([
-                'success' => false,
-                'message' => 'El email ingresado no es válido'
-            ], 400);
-            return;
-        }
+        // Consultar código usando el servicio
+        $result = $this->codeService->consultCode($platform, $email, $username);
 
-        // Validar usuario (mínimo 3 caracteres)
-        if (strlen(trim($username)) < 3) {
-            json_response([
-                'success' => false,
-                'message' => 'El usuario debe tener al menos 3 caracteres'
-            ], 400);
-            return;
-        }
-
-        // TODO: Implementar lógica de consulta real cuando esté lista la BD
-        // Por ahora, respuesta mock
-        json_response([
-            'success' => false,
-            'message' => 'Sistema en desarrollo. La funcionalidad estará disponible pronto.',
-            'platform' => $platform
-        ], 503);
+        // Determinar código HTTP
+        $httpCode = $result['success'] ? 200 : 404;
+        
+        json_response($result, $httpCode);
     }
 
     /**

@@ -46,15 +46,25 @@ SISTEMA_GAC/
 
 ## 🚀 Instalación
 
-Ver `INSTALLATION.md` para instrucciones detalladas.
+Ver `documentacion/INSTALLATION.md` para instrucciones detalladas.
 
 ---
 
 ## 📚 Documentación
 
-- `ARQUITECTURA.md` - Arquitectura técnica completa
-- `API.md` - Documentación de API REST
-- `ROLES.md` - Sistema de roles y permisos
+Toda la documentación se encuentra en la carpeta `documentacion/`:
+
+- `ARCHITECTURE.md` - Arquitectura técnica completa
+- `CRITERIOS_DESARROLLO.md` - Criterios y estándares de desarrollo
+- `DEPLOYMENT.md` - Guía de despliegue avanzado
+- `DEPLOYMENT_SIMPLE.md` - Guía de despliegue simple
+- `CONFIGURAR_REPO_PRIVADO.md` - Configurar repositorio privado
+- `SOLUCION_GIT_CPANEL.md` - Solución de problemas con Git en cPanel
+- `INSTALLATION.md` - Guía de instalación
+- `QUICK_START.md` - Inicio rápido
+- `EJECUTAR.md` - Guía de ejecución
+- `COMANDOS_GIT.md` - Comandos Git básicos
+- Y más...
 
 ---
 
