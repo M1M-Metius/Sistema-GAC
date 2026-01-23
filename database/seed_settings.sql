@@ -4,7 +4,7 @@
 -- Este script inserta los asuntos de email por plataforma
 -- basados en el análisis del sistema original
 
-USE gac_operational;
+USE pocoavbb_gac;
 
 -- Insertar settings de asuntos de email por plataforma
 -- Formato: PLATAFORMA_N (donde N es 1, 2, 3, 4)
@@ -77,3 +77,64 @@ INSERT IGNORE INTO settings (name, value, type, description) VALUES
 INSERT IGNORE INTO settings (name, value, type, description) VALUES
 ('PAGE_TITLE', 'Consulta tu Código', 'string', 'Título de la página principal'),
 ('EMAIL_AUTH_ENABLED', '0', 'boolean', 'Habilitar autenticación por email');
+
+-- ============================================
+-- ROLES Y PERMISOS
+-- ============================================
+
+-- Insertar roles por defecto
+INSERT IGNORE INTO roles (id, name, display_name, description) VALUES
+(1, 'SUPER_ADMIN', 'Super Administrador', 'Acceso total al sistema.'),
+(2, 'ADMIN', 'Administrador', 'Gestión de usuarios, correos y plataformas.'),
+(3, 'OPERATOR', 'Operador', 'Gestión de códigos y clientes.'),
+(4, 'VIEWER', 'Visualizador', 'Solo puede ver reportes y estadísticas.'),
+(5, 'USER', 'Usuario Público', 'Acceso a la consulta de códigos.');
+
+-- Insertar permisos por defecto
+INSERT IGNORE INTO permissions (name, display_name, description, category) VALUES
+('view_dashboard', 'Ver Dashboard', 'Permite acceder al panel principal del sistema.', 'Dashboard'),
+('manage_users', 'Gestionar Usuarios', 'Permite crear, editar y eliminar usuarios.', 'Usuarios'),
+('view_users', 'Ver Usuarios', 'Permite ver la lista de usuarios.', 'Usuarios'),
+('manage_roles', 'Gestionar Roles', 'Permite crear, editar y eliminar roles y sus permisos.', 'Roles'),
+('view_roles', 'Ver Roles', 'Permite ver la lista de roles y sus permisos.', 'Roles'),
+('manage_email_accounts', 'Gestionar Cuentas de Email', 'Permite agregar, editar y eliminar cuentas de email.', 'Cuentas de Email'),
+('view_email_accounts', 'Ver Cuentas de Email', 'Permite ver la lista de cuentas de email.', 'Cuentas de Email'),
+('manage_platforms', 'Gestionar Plataformas', 'Permite agregar, editar y eliminar plataformas.', 'Plataformas'),
+('view_platforms', 'Ver Plataformas', 'Permite ver la lista de plataformas.', 'Plataformas'),
+('manage_codes', 'Gestionar Códigos', 'Permite ver, agregar, editar y eliminar códigos.', 'Códigos'),
+('view_codes', 'Ver Códigos', 'Permite ver la lista de códigos.', 'Códigos'),
+('consult_codes', 'Consultar Códigos', 'Permite a los usuarios consultar códigos.', 'Códigos'),
+('manage_settings', 'Gestionar Configuraciones', 'Permite modificar las configuraciones generales del sistema.', 'Configuración'),
+('view_settings', 'Ver Configuraciones', 'Permite ver las configuraciones generales del sistema.', 'Configuración'),
+('view_reports', 'Ver Reportes', 'Permite acceder a los reportes y estadísticas del sistema.', 'Reportes');
+
+-- Asignar todos los permisos al SUPER_ADMIN
+INSERT IGNORE INTO role_permissions (role_id, permission_id)
+SELECT
+    (SELECT id FROM roles WHERE name = 'SUPER_ADMIN'),
+    id
+FROM permissions;
+
+-- Asignar permisos básicos al ADMIN
+INSERT IGNORE INTO role_permissions (role_id, permission_id)
+SELECT
+    (SELECT id FROM roles WHERE name = 'ADMIN'),
+    id
+FROM permissions
+WHERE name IN ('view_dashboard', 'manage_users', 'view_users', 'manage_email_accounts', 'view_email_accounts', 'manage_platforms', 'view_platforms', 'view_codes', 'view_reports', 'manage_settings', 'view_settings');
+
+-- Asignar permisos básicos al OPERATOR
+INSERT IGNORE INTO role_permissions (role_id, permission_id)
+SELECT
+    (SELECT id FROM roles WHERE name = 'OPERATOR'),
+    id
+FROM permissions
+WHERE name IN ('view_dashboard', 'manage_codes', 'view_codes', 'view_users', 'view_reports');
+
+-- Asignar permisos básicos al VIEWER
+INSERT IGNORE INTO role_permissions (role_id, permission_id)
+SELECT
+    (SELECT id FROM roles WHERE name = 'VIEWER'),
+    id
+FROM permissions
+WHERE name IN ('view_dashboard', 'view_codes', 'view_users', 'view_reports');

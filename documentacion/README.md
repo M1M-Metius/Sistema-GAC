@@ -19,6 +19,8 @@ Esta carpeta contiene toda la documentación del sistema GAC (Gestor Automatizad
 - **[EMAIL_FILTER_SERVICE.md](EMAIL_FILTER_SERVICE.md)** - Documentación del servicio de filtrado de emails por asunto
 - **[CODE_SERVICE.md](CODE_SERVICE.md)** - Documentación del servicio de códigos (consulta y guardado)
 - **[CRON_JOBS.md](CRON_JOBS.md)** - Documentación técnica de los cron jobs en Python
+- **[GUIA_FLUJO_COMPLETO.md](GUIA_FLUJO_COMPLETO.md)** - Guía completa del flujo del sistema, configuraciones y puesta en marcha
+- **[PRODUCCION.md](PRODUCCION.md)** - Guía completa para levantar el sistema en producción (servidor/cPanel)
 
 ### 📦 Instalación y Configuración
 - **[INSTALLATION.md](INSTALLATION.md)** - Guía completa de instalación

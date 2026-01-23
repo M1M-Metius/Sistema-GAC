@@ -39,7 +39,7 @@ class AppConfig
             define('DB_PORT', $_ENV['DB_PORT'] ?? 3306);
         }
         if (!defined('DB_NAME')) {
-            define('DB_NAME', $_ENV['DB_NAME'] ?? 'gac_operational');
+            define('DB_NAME', $_ENV['DB_NAME'] ?? 'pocoavbb_gac');
         }
         if (!defined('DB_USER')) {
             define('DB_USER', $_ENV['DB_USER'] ?? 'root');
@@ -54,12 +54,12 @@ class AppConfig
             define('DB_COLLATE', $_ENV['DB_COLLATE'] ?? 'utf8mb4_spanish_ci');
         }
 
-        // Configuración de base de datos warehouse
-        define('WAREHOUSE_DB_HOST', $_ENV['WAREHOUSE_DB_HOST'] ?? 'localhost');
-        define('WAREHOUSE_DB_PORT', $_ENV['WAREHOUSE_DB_PORT'] ?? 3306);
-        define('WAREHOUSE_DB_NAME', $_ENV['WAREHOUSE_DB_NAME'] ?? 'gac_warehouse');
-        define('WAREHOUSE_DB_USER', $_ENV['WAREHOUSE_DB_USER'] ?? 'root');
-        define('WAREHOUSE_DB_PASSWORD', $_ENV['WAREHOUSE_DB_PASSWORD'] ?? '');
+        // Configuración de base de datos warehouse (usar misma BD por ahora)
+        define('WAREHOUSE_DB_HOST', $_ENV['WAREHOUSE_DB_HOST'] ?? DB_HOST);
+        define('WAREHOUSE_DB_PORT', $_ENV['WAREHOUSE_DB_PORT'] ?? DB_PORT);
+        define('WAREHOUSE_DB_NAME', $_ENV['WAREHOUSE_DB_NAME'] ?? DB_NAME);
+        define('WAREHOUSE_DB_USER', $_ENV['WAREHOUSE_DB_USER'] ?? DB_USER);
+        define('WAREHOUSE_DB_PASSWORD', $_ENV['WAREHOUSE_DB_PASSWORD'] ?? DB_PASSWORD);
 
         // Configuración de seguridad
         define('APP_KEY', $_ENV['APP_KEY'] ?? '');

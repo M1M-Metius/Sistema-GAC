@@ -8,16 +8,29 @@
 namespace Gac\Controllers;
 
 use Gac\Core\Request;
+use Gac\Repositories\EmailAccountRepository;
 
 class EmailAccountController
 {
+    /**
+     * Repositorio de cuentas de email
+     */
+    private EmailAccountRepository $emailAccountRepository;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->emailAccountRepository = new EmailAccountRepository();
+    }
+
     /**
      * Listar todas las cuentas de email
      */
     public function index(Request $request): void
     {
-        // TODO: Obtener cuentas desde servicio cuando esté implementado
-        $emailAccounts = [];
+        $emailAccounts = $this->emailAccountRepository->findAll();
         
         $this->renderView('admin/email_accounts/index', [
             'title' => 'Gestión de Cuentas de Email',
@@ -74,11 +87,37 @@ class EmailAccountController
             return;
         }
 
-        // TODO: Implementar guardado cuando esté el servicio listo
-        json_response([
-            'success' => false,
-            'message' => 'Funcionalidad en desarrollo'
-        ], 503);
+        // Preparar datos para guardar
+        $data = [
+            'email' => $email,
+            'type' => 'imap',
+            'provider_config' => [
+                'imap_server' => $imap_server,
+                'imap_port' => (int)$imap_port,
+                'imap_encryption' => (int)$imap_port === 993 ? 'ssl' : 'tls',
+                'imap_user' => $imap_user,
+                'imap_password' => $imap_password,
+                'imap_validate_cert' => true
+            ],
+            'enabled' => (int)$enabled,
+            'sync_status' => 'pending'
+        ];
+
+        // Guardar cuenta
+        $accountId = $this->emailAccountRepository->save($data);
+
+        if ($accountId) {
+            json_response([
+                'success' => true,
+                'message' => 'Cuenta de email agregada correctamente',
+                'id' => $accountId
+            ], 201);
+        } else {
+            json_response([
+                'success' => false,
+                'message' => 'Error al guardar la cuenta de email'
+            ], 500);
+        }
     }
 
     /**
@@ -86,16 +125,22 @@ class EmailAccountController
      */
     public function edit(Request $request): void
     {
-        $id = $request->get('id', 0);
+        $id = (int)$request->get('id', 0);
         
-        // TODO: Obtener cuenta desde servicio
-        $emailAccount = null;
+        $emailAccount = $this->emailAccountRepository->findById($id);
         
         if (!$emailAccount) {
             http_response_code(404);
             echo "Cuenta no encontrada";
             return;
         }
+
+        // Parsear provider_config
+        $config = json_decode($emailAccount['provider_config'] ?? '{}', true);
+        $emailAccount['imap_server'] = $config['imap_server'] ?? '';
+        $emailAccount['imap_port'] = $config['imap_port'] ?? 993;
+        $emailAccount['imap_user'] = $config['imap_user'] ?? '';
+        $emailAccount['imap_password'] = $config['imap_password'] ?? '';
 
         $this->renderView('admin/email_accounts/form', [
             'title' => 'Editar Cuenta de Email',
@@ -117,13 +162,79 @@ class EmailAccountController
             return;
         }
 
-        $id = $request->input('id', 0);
+        $id = (int)$request->input('id', 0);
         
-        // TODO: Implementar actualización cuando esté el servicio listo
-        json_response([
-            'success' => false,
-            'message' => 'Funcionalidad en desarrollo'
-        ], 503);
+        if ($id <= 0) {
+            json_response([
+                'success' => false,
+                'message' => 'ID de cuenta inválido'
+            ], 400);
+            return;
+        }
+
+        $email = $request->input('email', '');
+        $imap_server = $request->input('imap_server', '');
+        $imap_port = $request->input('imap_port', 993);
+        $imap_user = $request->input('imap_user', '');
+        $imap_password = $request->input('imap_password', '');
+        $enabled = $request->input('enabled', 1);
+
+        // Validación
+        if (empty($email) || empty($imap_server) || empty($imap_user)) {
+            json_response([
+                'success' => false,
+                'message' => 'Todos los campos son requeridos'
+            ], 400);
+            return;
+        }
+
+        // Obtener cuenta existente para preservar password si no se cambia
+        $existingAccount = $this->emailAccountRepository->findById($id);
+        if (!$existingAccount) {
+            json_response([
+                'success' => false,
+                'message' => 'Cuenta no encontrada'
+            ], 404);
+            return;
+        }
+
+        $existingConfig = json_decode($existingAccount['provider_config'] ?? '{}', true);
+        
+        // Si no se proporciona password, usar el existente
+        if (empty($imap_password)) {
+            $imap_password = $existingConfig['imap_password'] ?? '';
+        }
+
+        // Preparar datos
+        $data = [
+            'email' => $email,
+            'type' => 'imap',
+            'provider_config' => [
+                'imap_server' => $imap_server,
+                'imap_port' => (int)$imap_port,
+                'imap_encryption' => (int)$imap_port === 993 ? 'ssl' : 'tls',
+                'imap_user' => $imap_user,
+                'imap_password' => $imap_password,
+                'imap_validate_cert' => true
+            ],
+            'enabled' => (int)$enabled,
+            'sync_status' => $existingAccount['sync_status'] ?? 'pending'
+        ];
+
+        // Actualizar cuenta
+        $updated = $this->emailAccountRepository->update($id, $data);
+
+        if ($updated) {
+            json_response([
+                'success' => true,
+                'message' => 'Cuenta de email actualizada correctamente'
+            ], 200);
+        } else {
+            json_response([
+                'success' => false,
+                'message' => 'Error al actualizar la cuenta de email'
+            ], 500);
+        }
     }
 
     /**
@@ -139,13 +250,29 @@ class EmailAccountController
             return;
         }
 
-        $id = $request->input('id', 0);
+        $id = (int)$request->input('id', 0);
         
-        // TODO: Implementar eliminación cuando esté el servicio listo
-        json_response([
-            'success' => false,
-            'message' => 'Funcionalidad en desarrollo'
-        ], 503);
+        if ($id <= 0) {
+            json_response([
+                'success' => false,
+                'message' => 'ID de cuenta inválido'
+            ], 400);
+            return;
+        }
+
+        $deleted = $this->emailAccountRepository->delete($id);
+
+        if ($deleted) {
+            json_response([
+                'success' => true,
+                'message' => 'Cuenta de email eliminada correctamente'
+            ], 200);
+        } else {
+            json_response([
+                'success' => false,
+                'message' => 'Error al eliminar la cuenta de email'
+            ], 500);
+        }
     }
 
     /**
@@ -161,14 +288,51 @@ class EmailAccountController
             return;
         }
 
-        $id = $request->input('id', 0);
-        $enabled = $request->input('enabled', 0);
+        $id = (int)$request->input('id', 0);
+        $enabled = (int)$request->input('enabled', 0);
         
-        // TODO: Implementar cambio de estado cuando esté el servicio listo
-        json_response([
-            'success' => false,
-            'message' => 'Funcionalidad en desarrollo'
-        ], 503);
+        if ($id <= 0) {
+            json_response([
+                'success' => false,
+                'message' => 'ID de cuenta inválido'
+            ], 400);
+            return;
+        }
+
+        // Obtener cuenta existente
+        $account = $this->emailAccountRepository->findById($id);
+        if (!$account) {
+            json_response([
+                'success' => false,
+                'message' => 'Cuenta no encontrada'
+            ], 404);
+            return;
+        }
+
+        // Actualizar solo el estado
+        $config = json_decode($account['provider_config'] ?? '{}', true);
+        $data = [
+            'email' => $account['email'],
+            'type' => $account['type'],
+            'provider_config' => $config,
+            'enabled' => $enabled,
+            'sync_status' => $account['sync_status'] ?? 'pending'
+        ];
+
+        $updated = $this->emailAccountRepository->update($id, $data);
+
+        if ($updated) {
+            json_response([
+                'success' => true,
+                'message' => 'Estado de cuenta actualizado correctamente',
+                'enabled' => $enabled
+            ], 200);
+        } else {
+            json_response([
+                'success' => false,
+                'message' => 'Error al actualizar el estado de la cuenta'
+            ], 500);
+        }
     }
 
     /**

@@ -102,9 +102,9 @@ class CodeService
             ];
         }
 
-        // Guardar en warehouse (histórico)
-        $code['consumed_at'] = date('Y-m-d H:i:s');
-        $this->codeRepository->saveToWarehouse($code);
+        // Guardar en warehouse (histórico) - Deshabilitado temporalmente
+        // $code['consumed_at'] = date('Y-m-d H:i:s');
+        // $this->codeRepository->saveToWarehouse($code);
 
         // Retornar código
         return [
@@ -154,9 +154,9 @@ class CodeService
         $codeId = $this->codeRepository->save($data);
 
         if ($codeId) {
-            // Guardar también en warehouse
-            $data['id'] = $codeId;
-            $this->codeRepository->saveToWarehouse($data);
+            // Guardar también en warehouse - Deshabilitado temporalmente
+            // $data['id'] = $codeId;
+            // $this->codeRepository->saveToWarehouse($data);
         }
 
         return $codeId;

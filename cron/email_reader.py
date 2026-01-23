@@ -133,9 +133,9 @@ def main():
                         codes_saved += 1
                         logger.info(f"  - ✓ Código guardado: {code_data['code']} ({platform})")
                         
-                        # Guardar en warehouse
-                        save_data['id'] = code_id
-                        CodeRepository.save_to_warehouse(save_data)
+                        # Guardar en warehouse - Deshabilitado temporalmente
+                        # save_data['id'] = code_id
+                        # CodeRepository.save_to_warehouse(save_data)
                     else:
                         logger.error(f"  - ✗ Error al guardar código: {code_data['code']}")
                 

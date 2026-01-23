@@ -3,11 +3,8 @@
 -- Gestor Automatizado de Códigos v2.0.0
 -- ============================================
 
--- Base de Datos Operativa
-CREATE DATABASE IF NOT EXISTS gac_operational 
-CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
-
-USE gac_operational;
+-- Usar base de datos existente: pocoavbb_gac
+USE pocoavbb_gac;
 
 -- ============================================
 -- TABLAS DE AUTENTICACIÓN Y ROLES
@@ -166,44 +163,5 @@ CREATE TABLE IF NOT EXISTS settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- ============================================
--- BASE DE DATOS WAREHOUSE
+-- FIN DEL SCHEMA
 -- ============================================
-
-CREATE DATABASE IF NOT EXISTS gac_warehouse 
-CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
-
-USE gac_warehouse;
-
--- Tabla histórica de códigos
-CREATE TABLE IF NOT EXISTS codes_history (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code_id INT,
-    email_account_id INT NOT NULL,
-    platform_id INT NOT NULL,
-    code VARCHAR(255) NOT NULL,
-    email_from VARCHAR(255),
-    subject VARCHAR(500),
-    received_at TIMESTAMP NOT NULL,
-    consumed_at TIMESTAMP NULL,
-    origin ENUM('imap', 'gmail') NOT NULL,
-    archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_received_at (received_at),
-    INDEX idx_platform_id (platform_id),
-    INDEX idx_email_account_id (email_account_id),
-    INDEX idx_origin (origin),
-    INDEX idx_archived_at (archived_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-
--- Tabla de estadísticas diarias
-CREATE TABLE IF NOT EXISTS daily_statistics (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    date DATE NOT NULL,
-    platform_id INT NOT NULL,
-    total_received INT DEFAULT 0,
-    total_consumed INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_date_platform (date, platform_id),
-    INDEX idx_date (date),
-    INDEX idx_platform_id (platform_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;

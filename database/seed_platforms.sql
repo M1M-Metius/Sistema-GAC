@@ -3,7 +3,7 @@
 -- ============================================
 -- Este script inserta las plataformas iniciales
 
-USE gac_operational;
+USE pocoavbb_gac;
 
 -- Insertar plataformas
 INSERT IGNORE INTO platforms (name, display_name, enabled, config) VALUES

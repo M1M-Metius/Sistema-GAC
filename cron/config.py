@@ -12,7 +12,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'localhost'),
     'port': int(os.getenv('DB_PORT', 3306)),
-    'database': os.getenv('DB_NAME', 'gac_operational'),
+    'database': os.getenv('DB_NAME', 'pocoavbb_gac'),
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASSWORD', '')
 }
@@ -21,7 +21,7 @@ DB_CONFIG = {
 WAREHOUSE_DB_CONFIG = {
     'host': os.getenv('WAREHOUSE_DB_HOST', 'localhost'),
     'port': int(os.getenv('WAREHOUSE_DB_PORT', 3306)),
-    'database': os.getenv('WAREHOUSE_DB_NAME', 'gac_warehouse'),
+    'database': os.getenv('WAREHOUSE_DB_NAME', 'pocoavbb_gac'),
     'user': os.getenv('WAREHOUSE_DB_USER', 'root'),
     'password': os.getenv('WAREHOUSE_DB_PASSWORD', '')
 }
